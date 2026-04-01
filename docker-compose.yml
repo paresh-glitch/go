@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: .
+    container_name: go_backend
+    networks:
+      - appnet
+    restart: always
+    environment:
+      - PORT=8080
+
+  nginx:
+    image: nginx:alpine
+    container_name: go_nginx
+    ports:
+      - "80:80"
+    networks:
+      - appnet
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
+
+networks:
+  appnet:
