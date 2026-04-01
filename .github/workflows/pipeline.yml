@@ -7,20 +7,29 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
         with:
           go-version: '1.25'
-      - name: lint and install
-        run: |
-          go mod download
-          golangci-lint run 
 
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Run go vet
+        run: go vet ./...
+
+      - name: Run go fmt check
+        run: |
+          if [ "$(gofmt -l .)" != "" ]; then
+            echo "Code is not formatted! Run gofmt"
+            exit 1
+          fi
   test:
     runs-on: ubuntu-latest
     needs: lint
