@@ -44,7 +44,6 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: test and install
         run: |
-          cd app
           go mod download
           go test -v ./
 
